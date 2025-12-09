@@ -1,12 +1,19 @@
 package ensemble
 
 import (
+	"io/ioutil"
+	"os"
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/evaluation"
 	. "github.com/smartystreets/goconvey/convey"
-	"io/ioutil"
-	"testing"
 )
+
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func TestMultiSVMUnweighted(t *testing.T) {
 	Convey("Loading data...", t, func() {

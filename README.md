@@ -8,7 +8,8 @@ GoLearn
 
 [![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/sjwhitworth/)
 
-GoLearn is a 'batteries included' machine learning library for Go. **Simplicity**, paired with customisability, is the goal.
+GoLearn is a 'batteries included' machine learning library for Go. **Simplicity**, paired with customisability, is the
+goal.
 We are in active development, and would love comments from users out in the wild. Drop us a line on Twitter.
 
 twitter: [@golearn_ml](http://www.twitter.com/golearn_ml)
@@ -86,10 +87,12 @@ GoLearn comes with practical examples. Dive in and see what is going on.
 cd $GOPATH/src/github.com/sjwhitworth/golearn/examples/knnclassifier
 go run knnclassifier_iris.go
 ```
+
 ```bash
 cd $GOPATH/src/github.com/sjwhitworth/golearn/examples/instances
 go run instances.go
 ```
+
 ```bash
 cd $GOPATH/src/github.com/sjwhitworth/golearn/examples/trees
 go run trees.go
@@ -98,9 +101,9 @@ go run trees.go
 Docs
 ====
 
- * [English](https://github.com/sjwhitworth/golearn/wiki)
- * [中文文档(简体)](doc/zh_CN/Home.md)
- * [中文文档(繁体)](doc/zh_TW/Home.md)
+* [English](https://github.com/sjwhitworth/golearn/wiki)
+* [中文文档(简体)](doc/zh_CN/Home.md)
+* [中文文档(繁体)](doc/zh_TW/Home.md)
 
 Join the team
 =============

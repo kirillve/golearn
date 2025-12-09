@@ -1,12 +1,12 @@
 package naive
 
 import (
+	"os"
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/filters"
 	. "github.com/smartystreets/goconvey/convey"
-	"io/ioutil"
-	"os"
-	"testing"
 )
 
 func TestNoFit(t *testing.T) {
@@ -45,7 +45,7 @@ func TestSerialize(t *testing.T) {
 		oldPredictions, err := nb.Predict(convertToBinary(testData))
 
 		Convey("Saving the classifer should work...", func() {
-			f, err := ioutil.TempFile(os.TempDir(), "nb")
+			f, err := os.CreateTemp(os.TempDir(), "nb")
 			So(err, ShouldBeNil)
 			defer func() {
 				f.Close()

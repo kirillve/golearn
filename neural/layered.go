@@ -2,11 +2,11 @@ package neural
 
 import (
 	"fmt"
+	"math"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/filters"
 	"gonum.org/v1/gonum/mat"
-	"math"
-	"math/rand"
 )
 
 // MultiLayerNet creates a new Network which is conceptually
@@ -209,6 +209,7 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 	m.network = NewNetwork(size, len(inputAttrsVec), Sigmoid)
 
 	// Initialise inter-hidden layer weights and biases to small random values
+	base.RngMu.Lock()
 	layerOffset := len(inputAttrsVec)
 	for i := 0; i < len(m.layers)-1; i++ {
 		// Get the size of this layer
@@ -224,7 +225,7 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 				// Compute offset
 				nodeOffset2 := layerOffset + thisLayerSize + k
 				// Set weight randomly
-				m.network.SetWeight(nodeOffset1, nodeOffset2, rand.NormFloat64()*0.1)
+				m.network.SetWeight(nodeOffset1, nodeOffset2, base.Rng.NormFloat64()*0.1)
 			}
 		}
 		layerOffset += thisLayerSize
@@ -235,7 +236,7 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 	for _, l := range m.layers {
 		for j := 1; j <= l; j++ {
 			nodeOffset := layerOffset + j
-			m.network.SetBias(nodeOffset, rand.NormFloat64()*0.1)
+			m.network.SetBias(nodeOffset, base.Rng.NormFloat64()*0.1)
 		}
 		layerOffset += l
 	}
@@ -243,7 +244,7 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 	// Initialise biases for output layer
 	for i := 0; i < len(classAttrsVec); i++ {
 		nodeOffset := layerOffset + i
-		m.network.SetBias(nodeOffset, rand.NormFloat64()*0.1)
+		m.network.SetBias(nodeOffset, base.Rng.NormFloat64()*0.1)
 	}
 
 	// Connect final hidden layer with the output layer
@@ -254,7 +255,7 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 				nodeOffset1 := layerOffset + j
 				for k := 1; k <= len(classAttrsVec); k++ {
 					nodeOffset2 := layerOffset + l + k
-					m.network.SetWeight(nodeOffset1, nodeOffset2, rand.NormFloat64()*0.1)
+					m.network.SetWeight(nodeOffset1, nodeOffset2, base.Rng.NormFloat64()*0.1)
 				}
 			}
 		}
@@ -271,10 +272,11 @@ func (m *MultiLayerNet) Fit(X base.FixedDataGrid) {
 		}
 		for j := 1; j <= nextLayerLen; j++ {
 			nodeOffset := len(inputAttrsVec) + j
-			v := rand.NormFloat64() * 0.1
+			v := base.Rng.NormFloat64() * 0.1
 			m.network.SetWeight(i, nodeOffset, v)
 		}
 	}
+	base.RngMu.Unlock()
 
 	// Create the training activation vector
 	trainVec := mat.NewDense(size, 1, make([]float64, size))

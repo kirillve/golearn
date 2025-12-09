@@ -1,0 +1,55 @@
+version: "2"
+
+linters:
+  default: standard
+  disable:
+    - errcheck    # Many unchecked errors in legacy code
+    - ineffassign # Many ineffective assignments in legacy code
+    - unused      # Unused code in legacy codebase
+  settings:
+    staticcheck:
+      checks:
+        - "all"
+        - "-SA1019"  # Ignore deprecation warnings (rand.Seed needed for test reproducibility)
+        - "-SA4006"  # Ignore "value is never used"
+        - "-SA4010"  # Ignore "result of append is never used"
+        - "-SA4011"  # Ignore "ineffective break statement"
+        - "-SA4028"  # Ignore "x % 1 is always zero"
+        - "-SA5001"  # Ignore "should check error before deferring Close()"
+        - "-SA5011"  # Ignore "possible nil pointer dereference"
+        - "-SA6000"  # Ignore "calling regexp.MatchString in a loop"
+        - "-SA9003"  # Ignore "empty branch"
+        - "-S1000"   # Ignore "should use for range instead of for select"
+        - "-S1001"   # Ignore "should use copy instead of a loop"
+        - "-S1002"   # Ignore "should omit comparison to bool constant"
+        - "-S1005"   # Ignore "unnecessary assignment to blank identifier"
+        - "-S1006"   # Ignore "should use for {} instead of for true {}"
+        - "-S1010"   # Ignore "should omit second index in slice"
+        - "-S1011"   # Ignore "should replace loop with append"
+        - "-S1017"   # Ignore "should replace if with TrimSuffix"
+        - "-S1019"   # Ignore "should use make([]T, n) instead"
+        - "-S1023"   # Ignore "redundant break statement"
+        - "-ST1000"  # Ignore "package comment should be of the form..."
+        - "-ST1003"  # Ignore naming convention issues (underscores, ALL_CAPS)
+        - "-ST1005"  # Ignore "error strings should not be capitalized"
+        - "-ST1012"  # Ignore "error var should have name ErrFoo"
+        - "-ST1016"  # Ignore "receiver name should be consistent"
+        - "-ST1020"  # Ignore "comment on exported function should be of the form..."
+        - "-ST1021"  # Ignore "comment on exported type should be of the form..."
+        - "-ST1022"  # Ignore "comment on exported var should be of the form..."
+        - "-ST1023"  # Ignore "should omit type from declaration"
+        - "-S1028"   # Ignore "should use fmt.Errorf instead of errors.New(fmt.Sprintf(...))"
+        - "-S1036"   # Ignore "unnecessary guard around map access"
+        - "-S1039"   # Ignore "unnecessary use of fmt.Sprintf"
+        - "-QF1001"  # Ignore "could apply De Morgan's law"
+        - "-QF1003"  # Ignore "could use tagged switch"
+        - "-QF1005"  # Ignore "could expand call to math.Pow"
+        - "-QF1006"  # Ignore "could lift into loop condition"
+        - "-QF1011"  # Ignore "could omit type from declaration"
+        - "-QF1012"  # Ignore "Use fmt.Fprintf instead of WriteString(fmt.Sprintf)"
+  exclusions:
+    paths:
+      - examples
+
+run:
+  timeout: 5m

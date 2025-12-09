@@ -1,6 +1,5 @@
-// +build go1.1
-// +build !go1.2
-// +build !go1.3
+//go:build go1.1 && !go1.2 && !go1.3
+// +build go1.1,!go1.2,!go1.3
 
 package linear_models
 

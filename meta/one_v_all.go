@@ -2,6 +2,7 @@ package meta
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 
@@ -346,9 +347,7 @@ func (m *OneVsAllModel) generateAttributes(from base.FixedDataGrid) map[base.Att
 	return ret
 }
 
-//
 // Filter implementation
-//
 type oneVsAllFilter struct {
 	attrs        map[base.Attribute]base.Attribute
 	classAttr    base.Attribute
@@ -363,7 +362,7 @@ func (f *oneVsAllFilter) GetAttributesAfterFiltering() []base.FilteredAttribute 
 	ret := make([]base.FilteredAttribute, len(f.attrs))
 	cnt := 0
 	for i := range f.attrs {
-		ret[cnt] = base.FilteredAttribute{i, f.attrs[i]}
+		ret[cnt] = base.FilteredAttribute{Old: i, New: f.attrs[i]}
 		cnt++
 	}
 	return ret

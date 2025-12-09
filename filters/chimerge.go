@@ -2,15 +2,17 @@ package filters
 
 import (
 	"fmt"
-	"github.com/sjwhitworth/golearn/base"
 	"math"
+
+	"github.com/sjwhitworth/golearn/base"
 )
 
 // ChiMergeFilter implements supervised discretisation
 // by merging successive numeric intervals if the difference
 // in their class distribution is not statistically signficant.
 // See Bramer, "Principles of Data Mining", 2nd Edition
-//  pp 105--115
+//
+//	pp 105--115
 type ChiMergeFilter struct {
 	AbstractDiscretizeFilter
 	tables       map[base.Attribute][]*FrequencyTableEntry
@@ -37,14 +39,15 @@ func NewChiMergeFilter(d base.FixedDataGrid, significance float64) *ChiMergeFilt
 
 // Train computes and stores the
 // Produces a value mapping table
-//   inst: The base.Instances which need discretising
-//   sig:  The significance level (e.g. 0.95)
-//   minrows: The minimum number of rows required in the frequency table
-//   maxrows: The maximum number of rows allowed in the frequency table
-//            If the number of rows is above this, statistically signficant
-//            adjacent rows will be merged
-//   precision: internal number of decimal places to round E value to
-//              (useful for verification)
+//
+//	inst: The base.Instances which need discretising
+//	sig:  The significance level (e.g. 0.95)
+//	minrows: The minimum number of rows required in the frequency table
+//	maxrows: The maximum number of rows allowed in the frequency table
+//	         If the number of rows is above this, statistically signficant
+//	         adjacent rows will be merged
+//	precision: internal number of decimal places to round E value to
+//	           (useful for verification)
 func chiMerge(inst base.FixedDataGrid, attr base.Attribute, sig float64, minrows int, maxrows int) []*FrequencyTableEntry {
 
 	// Parameter sanity checking
@@ -154,9 +157,9 @@ func (c *ChiMergeFilter) GetAttributesAfterFiltering() []base.FilteredAttribute 
 			for _, k := range c.tables[a] {
 				retAttr.GetSysValFromString(fmt.Sprintf("%f", k.Value))
 			}
-			ret[i] = base.FilteredAttribute{a, retAttr}
+			ret[i] = base.FilteredAttribute{Old: a, New: retAttr}
 		} else {
-			ret[i] = base.FilteredAttribute{a, a}
+			ret[i] = base.FilteredAttribute{Old: a, New: a}
 		}
 	}
 	return ret

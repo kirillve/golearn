@@ -2,10 +2,16 @@ package base
 
 import (
 	"fmt"
-	. "github.com/smartystreets/goconvey/convey"
-	"math/rand"
+	"os"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
+
+func TestMain(m *testing.M) {
+	SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func TestBAGSimple(t *testing.T) {
 	Convey("Given certain bit data", t, func() {
@@ -74,7 +80,10 @@ func TestBAG(t *testing.T) {
 		for i := 0; i < 50; i++ {
 			b := make([]byte, 3)
 			for j := 0; j < 3; j++ {
-				if rand.NormFloat64() >= 0 {
+				RngMu.Lock()
+				v := Rng.NormFloat64()
+				RngMu.Unlock()
+				if v >= 0 {
 					b[j] = byte(1)
 				} else {
 					b[j] = byte(0)

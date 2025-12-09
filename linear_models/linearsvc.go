@@ -5,10 +5,11 @@ import "C"
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/sjwhitworth/golearn/base"
-	"io/ioutil"
+	"io"
 	"os"
 	"unsafe"
+
+	"github.com/sjwhitworth/golearn/base"
 )
 
 // LinearSVCParams represnts all available LinearSVC options.
@@ -260,7 +261,7 @@ func (lr *LinearSVC) SaveWithPrefix(writer *base.ClassifierSerializer, prefix st
 		return base.DescribeError("Error marshalling parameters", err)
 	}
 
-	f, err := ioutil.TempFile(os.TempDir(), "liblinear")
+	f, err := os.CreateTemp(os.TempDir(), "liblinear")
 	if err != nil {
 		return err
 	}
@@ -274,7 +275,7 @@ func (lr *LinearSVC) SaveWithPrefix(writer *base.ClassifierSerializer, prefix st
 	}
 
 	f.Seek(0, os.SEEK_SET)
-	bytes, err := ioutil.ReadAll(f)
+	bytes, err := io.ReadAll(f)
 	if err != nil {
 		return base.DescribeError("Error reading model in again", err)
 	}
@@ -314,7 +315,7 @@ func (lr *LinearSVC) LoadWithPrefix(reader *base.ClassifierDeserializer, prefix 
 		return base.DescribeError("Error reading MODEL", err)
 	}
 
-	f, err := ioutil.TempFile(os.TempDir(), "linear")
+	f, err := os.CreateTemp(os.TempDir(), "linear")
 	defer func() {
 		f.Close()
 	}()

@@ -2,11 +2,18 @@ package perceptron
 
 import (
 	"fmt"
-	"github.com/sjwhitworth/golearn/base"
-	"github.com/sjwhitworth/golearn/evaluation"
+	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/sjwhitworth/golearn/base"
+	"github.com/sjwhitworth/golearn/evaluation"
 )
+
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func TestProcessData(t *testing.T) {
 	absPath, _ := filepath.Abs("../examples/datasets/house-votes-84.csv")

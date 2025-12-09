@@ -2,11 +2,11 @@ package meta
 
 import (
 	"fmt"
-	"github.com/sjwhitworth/golearn/base"
-	"math/rand"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/sjwhitworth/golearn/base"
 )
 
 // BaggedModel trains base.Classifiers on subsets of the original
@@ -32,7 +32,9 @@ func (b *BaggedModel) generateTrainingAttrs(model int, from base.FixedDataGrid) 
 			if len(ret) >= b.RandomFeatures {
 				break
 			}
-			attrIndex := rand.Intn(len(attrs))
+			base.RngMu.Lock()
+			attrIndex := base.Rng.Intn(len(attrs))
+			base.RngMu.Unlock()
 			attr := attrs[attrIndex]
 			matched := false
 			for _, a := range ret {
@@ -222,13 +224,15 @@ func (b *BaggedModel) Load(filePath string) error {
 	return err
 }
 
-/* type BaggedModel struct {
-	base.BaseClassifier
-	Models             []base.Classifier
-	RandomFeatures     int
-	lock               sync.Mutex
-	selectedAttributes map[int][]base.Attribute, always RandomFeatures in length
-}*/
+/*
+	 type BaggedModel struct {
+		base.BaseClassifier
+		Models             []base.Classifier
+		RandomFeatures     int
+		lock               sync.Mutex
+		selectedAttributes map[int][]base.Attribute, always RandomFeatures in length
+	}
+*/
 func (b *BaggedModel) SaveWithPrefix(writer *base.ClassifierSerializer, prefix string) error {
 	b.lock.Lock()
 	defer b.lock.Unlock()

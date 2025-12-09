@@ -2,7 +2,6 @@ package evaluation
 
 import (
 	"github.com/sjwhitworth/golearn/base"
-	"math/rand"
 )
 
 // GetCrossValidatedMetric returns the mean and variance of the confusion-matrix-derived
@@ -37,14 +36,16 @@ func GenerateCrossFoldValidationConfusionMatrices(data base.FixedDataGrid, cls b
 	// Assign each row to a fold
 	foldMap := make([]int, rows)
 	inverseFoldMap := make(map[int][]int)
+	base.RngMu.Lock()
 	for i := 0; i < rows; i++ {
-		fold := rand.Intn(folds)
+		fold := base.Rng.Intn(folds)
 		foldMap[i] = fold
 		if _, ok := inverseFoldMap[fold]; !ok {
 			inverseFoldMap[fold] = make([]int, 0)
 		}
 		inverseFoldMap[fold] = append(inverseFoldMap[fold], i)
 	}
+	base.RngMu.Unlock()
 
 	ret := make([]ConfusionMatrix, folds)
 

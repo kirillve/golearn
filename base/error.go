@@ -30,7 +30,7 @@ func (g *GoLearnError) Error() string {
 	}
 
 	if g.Description == "" {
-		fmt.Sprintf("%s", g.WrappedError)
+		return fmt.Sprintf("%s", g.WrappedError)
 	}
 	return fmt.Sprintf("GoLearnError( %s: %s )", g.Description, g.WrappedError)
 }

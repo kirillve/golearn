@@ -1,11 +1,18 @@
 package neural
 
 import (
+	"os"
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	. "github.com/smartystreets/goconvey/convey"
 	"gonum.org/v1/gonum/mat"
-	"testing"
 )
+
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func TestLayerStructureNoHidden(t *testing.T) {
 

@@ -2,15 +2,16 @@ package clustering
 
 import (
 	"bufio"
-	"github.com/sjwhitworth/golearn/base"
-	"github.com/sjwhitworth/golearn/metrics/pairwise"
-	. "github.com/smartystreets/goconvey/convey"
-	"gonum.org/v1/gonum/mat"
 	"math"
 	"math/big"
 	"os"
 	"strconv"
 	"testing"
+
+	"github.com/sjwhitworth/golearn/base"
+	"github.com/sjwhitworth/golearn/metrics/pairwise"
+	. "github.com/smartystreets/goconvey/convey"
+	"gonum.org/v1/gonum/mat"
 )
 
 func TestDBSCANDistanceQuery(t *testing.T) {

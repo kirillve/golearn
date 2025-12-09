@@ -3,10 +3,26 @@ package base
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 )
 
 // This file contains utility functions relating to efficiently
 // generating predictions and instantiating DataGrid implementations.
+
+// Rng is a package-level random generator with a fixed seed for reproducibility.
+// Use SeedRandom to change the seed if needed.
+var (
+	Rng   = rand.New(rand.NewSource(44414515))
+	RngMu sync.Mutex
+)
+
+// SeedRandom sets the seed for the package-level random generator.
+// This affects functions like InstancesTrainTestSplit, Shuffle, and SampleWithReplacement.
+func SeedRandom(seed int64) {
+	RngMu.Lock()
+	defer RngMu.Unlock()
+	Rng = rand.New(rand.NewSource(seed))
+}
 
 // GeneratePredictionVector selects the class Attributes from a given
 // FixedDataGrid and returns something which can hold the predictions.
@@ -380,14 +396,16 @@ func InstancesTrainTestSplit(src FixedDataGrid, prop float64) (FixedDataGrid, Fi
 
 	// Create the return structure
 	_, rows := src.Size()
+	RngMu.Lock()
 	for i := 0; i < rows; i++ {
-		trainOrTest := rand.Intn(101)
+		trainOrTest := Rng.Intn(101)
 		if trainOrTest > int(100*prop) {
 			trainingRows = append(trainingRows, i)
 		} else {
 			testingRows = append(testingRows, i)
 		}
 	}
+	RngMu.Unlock()
 
 	allAttrs := src.AllAttributes()
 
@@ -400,11 +418,13 @@ func InstancesTrainTestSplit(src FixedDataGrid, prop float64) (FixedDataGrid, Fi
 func LazyShuffle(from FixedDataGrid) FixedDataGrid {
 	_, rows := from.Size()
 	rowMap := make(map[int]int)
+	RngMu.Lock()
 	for i := 0; i < rows; i++ {
-		j := rand.Intn(i + 1)
+		j := Rng.Intn(i + 1)
 		rowMap[i] = j
 		rowMap[j] = i
 	}
+	RngMu.Unlock()
 	return NewInstancesViewFromRows(from, rowMap)
 }
 
@@ -413,10 +433,12 @@ func LazyShuffle(from FixedDataGrid) FixedDataGrid {
 func Shuffle(from FixedDataGrid) FixedDataGrid {
 	_, rows := from.Size()
 	if inst, ok := from.(*DenseInstances); ok {
+		RngMu.Lock()
 		for i := 0; i < rows; i++ {
-			j := rand.Intn(i + 1)
+			j := Rng.Intn(i + 1)
 			inst.swapRows(i, j)
 		}
+		RngMu.Unlock()
 		return inst
 	} else {
 		return LazyShuffle(from)
@@ -431,10 +453,12 @@ func Shuffle(from FixedDataGrid) FixedDataGrid {
 func SampleWithReplacement(from FixedDataGrid, size int) FixedDataGrid {
 	rowMap := make(map[int]int)
 	_, rows := from.Size()
+	RngMu.Lock()
 	for i := 0; i < size; i++ {
-		srcRow := rand.Intn(rows)
+		srcRow := Rng.Intn(rows)
 		rowMap[i] = srcRow
 	}
+	RngMu.Unlock()
 	return NewInstancesViewFromRows(from, rowMap)
 }
 

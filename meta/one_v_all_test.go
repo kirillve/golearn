@@ -2,13 +2,13 @@ package meta
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/evaluation"
 	"github.com/sjwhitworth/golearn/linear_models"
 	. "github.com/smartystreets/goconvey/convey"
-	"io/ioutil"
-	"os"
-	"testing"
 )
 
 func TestOneVsAllModel(t *testing.T) {
@@ -51,7 +51,7 @@ func TestOneVsAllModel(t *testing.T) {
 		Convey("Saving and reloading should work...", func() {
 			predictions, err := m.Predict(Y)
 			So(err, ShouldEqual, nil)
-			f, err := ioutil.TempFile(os.TempDir(), "tmpCls")
+			f, err := os.CreateTemp(os.TempDir(), "tmpCls")
 			So(err, ShouldBeNil)
 			defer func() {
 				f.Close()

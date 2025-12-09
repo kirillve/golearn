@@ -1,10 +1,11 @@
 package clustering
 
 import (
+	"math/big"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/metrics/pairwise"
 	"gonum.org/v1/gonum/mat"
-	"math/big"
 )
 
 // DBSCANParameters describes the parameters of the density-based

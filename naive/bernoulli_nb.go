@@ -2,8 +2,9 @@ package naive
 
 import (
 	"fmt"
-	"github.com/sjwhitworth/golearn/base"
 	"math"
+
+	"github.com/sjwhitworth/golearn/base"
 )
 
 // A Bernoulli Naive Bayes Classifier. Naive Bayes classifiers assumes
@@ -27,10 +28,10 @@ import (
 // \prod_{i=1}^{n}{[F_i \times p(f_i|C)) + (1-F_i)(1 - p(f_i|C)))]}
 //
 // where
-//     - F_i equals to 1 if feature is present in vector and zero
-//       otherwise
-//     - p(f_i|C) the probability of class C generating the feature
-//       f_i
+//   - F_i equals to 1 if feature is present in vector and zero
+//     otherwise
+//   - p(f_i|C) the probability of class C generating the feature
+//     f_i
 //
 // For more information:
 //

@@ -24,7 +24,7 @@ type MultiLinearSVC struct {
 // term, typically 1e-4.
 func NewMultiLinearSVC(loss, penalty string, dual bool, C float64, eps float64, weights map[string]float64) *MultiLinearSVC {
 	// Set up the training parameters
-	params := &linear_models.LinearSVCParams{0, nil, C, eps, false, dual}
+	params := &linear_models.LinearSVCParams{SolverType: 0, ClassWeights: nil, C: C, Eps: eps, WeightClassesAutomatically: false, Dual: dual}
 	err := params.SetKindFromStrings(loss, penalty)
 	if err != nil {
 		panic(err)

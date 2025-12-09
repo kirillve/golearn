@@ -1,9 +1,10 @@
 package base
 
 import (
+	"testing"
+
 	. "github.com/smartystreets/goconvey/convey"
 	"gonum.org/v1/gonum/mat"
-	"testing"
 )
 
 func TestInlineMat64Creation(t *testing.T) {

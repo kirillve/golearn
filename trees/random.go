@@ -2,8 +2,8 @@ package trees
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
-	"math/rand"
 )
 
 // RandomTreeRuleGenerator is used to generate decision rules for Random Trees
@@ -27,7 +27,9 @@ func (r *RandomTreeRuleGenerator) GenerateSplitRule(f base.FixedDataGrid) *Decis
 		if len(consideredAttributes) >= r.Attributes {
 			break
 		}
-		selectedAttrIndex := rand.Intn(maximumAttribute)
+		base.RngMu.Lock()
+		selectedAttrIndex := base.Rng.Intn(maximumAttribute)
+		base.RngMu.Unlock()
 		selectedAttribute := allAttributes[selectedAttrIndex]
 		matched := false
 		for _, a := range consideredAttributes {
