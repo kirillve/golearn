@@ -2,6 +2,7 @@ package filters
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 
@@ -34,9 +35,9 @@ func (d *AbstractDiscretizeFilter) GetAttributesAfterFiltering() []base.Filtered
 		if d.attrs[a] {
 			retAttr := new(base.CategoricalAttribute)
 			retAttr.SetName(a.GetName())
-			ret[i] = base.FilteredAttribute{a, retAttr}
+			ret[i] = base.FilteredAttribute{Old: a, New: retAttr}
 		} else {
-			ret[i] = base.FilteredAttribute{a, a}
+			ret[i] = base.FilteredAttribute{Old: a, New: a}
 		}
 	}
 	return ret

@@ -1,11 +1,18 @@
 package linear_models
 
 import (
-	"github.com/sjwhitworth/golearn/base"
-	. "github.com/smartystreets/goconvey/convey"
+	"os"
 	"strconv"
 	"testing"
+
+	"github.com/sjwhitworth/golearn/base"
+	. "github.com/smartystreets/goconvey/convey"
 )
+
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func TestLinearRegression(t *testing.T) {
 	Convey("Doing a  linear regression", t, func() {

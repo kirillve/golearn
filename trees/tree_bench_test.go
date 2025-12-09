@@ -1,9 +1,10 @@
 package trees_test
 
 import (
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/ensemble"
-	"testing"
 )
 
 func BenchmarkRandomForestFit(b *testing.B) {

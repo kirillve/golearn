@@ -5,6 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 

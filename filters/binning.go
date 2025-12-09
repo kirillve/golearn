@@ -114,9 +114,9 @@ func (b *BinningFilter) GetAttributesAfterFiltering() []base.FilteredAttribute {
 				binVal := fmt.Sprintf(fmtStr, floatVal)
 				retAttr.GetSysValFromString(binVal)
 			}
-			ret[i] = base.FilteredAttribute{a, retAttr}
+			ret[i] = base.FilteredAttribute{Old: a, New: retAttr}
 		} else {
-			ret[i] = base.FilteredAttribute{a, a}
+			ret[i] = base.FilteredAttribute{Old: a, New: a}
 		}
 	}
 	return ret

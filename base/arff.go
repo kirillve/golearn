@@ -177,7 +177,7 @@ func ParseARFFGetAttributes(filepath string) []Attribute {
 		}
 
 		if attr == nil {
-			panic(fmt.Errorf(line))
+			panic(fmt.Errorf("failed to parse attribute from line: %s", line))
 		}
 		attr.SetName(fields[1])
 		ret = append(ret, attr)

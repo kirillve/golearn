@@ -2,6 +2,7 @@ package filters
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 
@@ -56,7 +57,7 @@ func (b *BinaryConvertFilter) String() string {
 // If the old Attribute has a categorical value of at most n-items, then a non-zero
 // or zero byte sequence is returned based on the value of the new Attribute passed in.
 //
-// If the old Attribute is a float, it's value's unpacked and we check for non-zeroness
+// # If the old Attribute is a float, it's value's unpacked and we check for non-zeroness
 //
 // If the old Attribute is a BinaryAttribute, just return the input
 func (b *BinaryConvertFilter) Transform(a base.Attribute, n base.Attribute, attrBytes []byte) []byte {
@@ -120,7 +121,7 @@ func (b *BinaryConvertFilter) Train() error {
 			vals := ac.GetValues()
 			if len(vals) <= 2 {
 				nAttr := base.NewBinaryAttribute(ac.GetName())
-				fAttr := base.FilteredAttribute{ac, nAttr}
+				fAttr := base.FilteredAttribute{Old: ac, New: nAttr}
 				b.converted = append(b.converted, fAttr)
 				b.twoValuedCategoricalAttributes[a] = true
 			} else {
@@ -131,17 +132,17 @@ func (b *BinaryConvertFilter) Train() error {
 					v := vals[i]
 					newName := fmt.Sprintf("%s_%s", ac.GetName(), v)
 					newAttr := base.NewBinaryAttribute(newName)
-					fAttr := base.FilteredAttribute{ac, newAttr}
+					fAttr := base.FilteredAttribute{Old: ac, New: newAttr}
 					b.converted = append(b.converted, fAttr)
 					b.nValuedCategoricalAttributeMap[a][i] = newAttr
 				}
 			}
 		} else if ab, ok := a.(*base.BinaryAttribute); ok {
-			fAttr := base.FilteredAttribute{ab, ab}
+			fAttr := base.FilteredAttribute{Old: ab, New: ab}
 			b.converted = append(b.converted, fAttr)
 		} else if af, ok := a.(*base.FloatAttribute); ok {
 			newAttr := base.NewBinaryAttribute(af.GetName())
-			fAttr := base.FilteredAttribute{af, newAttr}
+			fAttr := base.FilteredAttribute{Old: af, New: newAttr}
 			b.converted = append(b.converted, fAttr)
 		} else {
 			return fmt.Errorf("Unsupported Attribute type: %v", a)

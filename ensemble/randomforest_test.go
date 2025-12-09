@@ -1,10 +1,8 @@
 package ensemble
 
 import (
-	"testing"
-
-	"io/ioutil"
 	"os"
+	"testing"
 
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/evaluation"
@@ -82,7 +80,7 @@ func TestRandomForestSerialization(t *testing.T) {
 					So(err, ShouldBeNil)
 
 					Convey("Saving the model should work...", func() {
-						f, err := ioutil.TempFile(os.TempDir(), "rf")
+						f, err := os.CreateTemp(os.TempDir(), "rf")
 						So(err, ShouldBeNil)
 						err = rf.Save(f.Name())
 						defer func() {

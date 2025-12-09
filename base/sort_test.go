@@ -1,8 +1,9 @@
 package base
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func isSortedAsc(inst FixedDataGrid, attr AttributeSpec) bool {

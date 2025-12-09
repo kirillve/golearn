@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"sort"
 
 	"github.com/sjwhitworth/golearn/base"
@@ -49,7 +50,16 @@ func (d *DecisionTreeRule) MarshalJSON() ([]byte, error) {
 		panic(err)
 	}
 	ret["split_attribute"] = marshaledSplitAttr
-	ret["split_val"] = d.SplitVal
+	// Handle special float values that JSON doesn't support
+	if math.IsInf(d.SplitVal, 1) {
+		ret["split_val"] = "Infinity"
+	} else if math.IsInf(d.SplitVal, -1) {
+		ret["split_val"] = "-Infinity"
+	} else if math.IsNaN(d.SplitVal) {
+		ret["split_val"] = "NaN"
+	} else {
+		ret["split_val"] = d.SplitVal
+	}
 	return json.Marshal(ret)
 }
 
@@ -61,7 +71,22 @@ func (d *DecisionTreeRule) unmarshalJSON(data []byte) error {
 		return err
 	}
 	if splitVal, ok := jsonMap["split_val"]; ok {
-		d.SplitVal = splitVal.(float64)
+		// Handle special float values stored as strings
+		switch v := splitVal.(type) {
+		case string:
+			switch v {
+			case "Infinity":
+				d.SplitVal = math.Inf(1)
+			case "-Infinity":
+				d.SplitVal = math.Inf(-1)
+			case "NaN":
+				d.SplitVal = math.NaN()
+			default:
+				d.SplitVal = 0
+			}
+		case float64:
+			d.SplitVal = v
+		}
 	}
 	split := jsonMap["split_attribute"]
 	splitBytes, err := json.Marshal(split)
@@ -74,7 +99,6 @@ func (d *DecisionTreeRule) unmarshalJSON(data []byte) error {
 			return err
 		}
 		if d.SplitAttr == nil {
-			panic("Should not be nil")
 			return fmt.Errorf("base.DeserializeAttribute returned nil")
 		}
 	} else {

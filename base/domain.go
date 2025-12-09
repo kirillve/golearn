@@ -5,7 +5,7 @@ package base
 import (
 	"bytes"
 	"encoding/gob"
-	"io/ioutil"
+	"os"
 
 	"gonum.org/v1/gonum/mat"
 )
@@ -39,7 +39,7 @@ func SaveEstimatorToGob(path string, e *Estimator) {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(path, b.Bytes(), 0644)
+	err = os.WriteFile(path, b.Bytes(), 0644)
 	if err != nil {
 		panic(err)
 	}

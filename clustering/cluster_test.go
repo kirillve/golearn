@@ -1,8 +1,9 @@
 package clustering
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestClusterEquality(t *testing.T) {

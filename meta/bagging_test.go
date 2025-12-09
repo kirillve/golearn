@@ -1,18 +1,21 @@
 package meta
 
 import (
-	"math/rand"
+	"io/ioutil"
+	"os"
 	"testing"
-	"time"
 
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/evaluation"
 	"github.com/sjwhitworth/golearn/filters"
 	"github.com/sjwhitworth/golearn/trees"
 	. "github.com/smartystreets/goconvey/convey"
-	"io/ioutil"
-	"os"
 )
+
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
 
 func BenchmarkBaggingRandomForestFit(t *testing.B) {
 	inst, err := base.ParseCSVToInstances("../examples/datasets/iris_headers.csv", true)
@@ -20,7 +23,6 @@ func BenchmarkBaggingRandomForestFit(t *testing.B) {
 		t.Fatalf("Unable to parse CSV to instances: %s", err.Error())
 	}
 
-	rand.Seed(time.Now().UnixNano())
 	filt := filters.NewChiMergeFilter(inst, 0.90)
 	for _, a := range base.NonClassFloatAttributes(inst) {
 		filt.AddAttribute(a)
@@ -45,7 +47,6 @@ func BenchmarkBaggingRandomForestPredict(t *testing.B) {
 		t.Fatalf("Unable to parse CSV to instances: %s", err.Error())
 	}
 
-	rand.Seed(time.Now().UnixNano())
 	filt := filters.NewChiMergeFilter(inst, 0.90)
 	for _, a := range base.NonClassFloatAttributes(inst) {
 		filt.AddAttribute(a)
@@ -74,7 +75,6 @@ func TestBaggedModelRandomForest(t *testing.T) {
 			trainData, testData := base.InstancesTrainTestSplit(inst, 0.6)
 
 			Convey("Filtering the split datasets", func() {
-				rand.Seed(time.Now().UnixNano())
 				filt := filters.NewChiMergeFilter(inst, 0.90)
 				for _, a := range base.NonClassFloatAttributes(inst) {
 					filt.AddAttribute(a)
@@ -114,7 +114,6 @@ func TestBaggedModelRandomForestSerialization(t *testing.T) {
 			trainData, testData := base.InstancesTrainTestSplit(inst, 0.6)
 
 			Convey("Filtering the split datasets", func() {
-				rand.Seed(time.Now().UnixNano())
 				filt := filters.NewChiMergeFilter(inst, 0.90)
 				for _, a := range base.NonClassFloatAttributes(inst) {
 					filt.AddAttribute(a)

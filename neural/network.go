@@ -3,8 +3,9 @@ package neural
 import (
 	"bytes"
 	"fmt"
-	"gonum.org/v1/gonum/mat"
 	"math"
+
+	"gonum.org/v1/gonum/mat"
 )
 
 // Network represents the most general neural network possible

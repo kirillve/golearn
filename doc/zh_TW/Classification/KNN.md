@@ -1,13 +1,16 @@
 **參照:
-[`examples/knnclassifier/knnclassifier_iris.go`](https://github.com/sjwhitworth/golearn/blob/master/examples/knnclassifier/knnclassifier_iris.go)**
+[
+`examples/knnclassifier/knnclassifier_iris.go`](https://github.com/sjwhitworth/golearn/blob/master/examples/knnclassifier/knnclassifier_iris.go)
+**
 
 KNN (K-Nearest Neighbours) 是一種將未知的事例透過最近的 K 筆訓練資料來決定類別的分類方法。
 
-
 ## 支援的衡量方式
-GoLearn 的 `KNNClassifier` 當前支援歐幾里得距離 ("euclidean")、曼哈頓距離 ("manhattan")、 餘弦距離 ("cosine")。 
+
+GoLearn 的 `KNNClassifier` 當前支援歐幾里得距離 ("euclidean")、曼哈頓距離 ("manhattan")、 餘弦距離 ("cosine")。
 
 ## 支援狀況
+
 <table>
 <tr>
 <td>作業系統</td><td>Mac OS X 10.8 <br /> Ubuntu 14.04</td></tr>

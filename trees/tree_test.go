@@ -1,18 +1,22 @@
 package trees
 
 import (
+	"io/ioutil"
+	"os"
+	"testing"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/evaluation"
 	"github.com/sjwhitworth/golearn/filters"
 	. "github.com/smartystreets/goconvey/convey"
-	"io/ioutil"
-	"math/rand"
-	"os"
-	"testing"
 )
 
+func TestMain(m *testing.M) {
+	base.SeedRandom(1)
+	os.Exit(m.Run())
+}
+
 func testCanSaveLoadPredictions(trainData, testData base.FixedDataGrid) {
-	rand.Seed(44414515)
 	Convey("Using InferID3Tree to create the tree and do the fitting", func() {
 		Convey("Using a RandomTreeRule", func() {
 			randomTreeRuleGenerator := new(RandomTreeRuleGenerator)
@@ -46,7 +50,6 @@ func testCanSaveLoadPredictions(trainData, testData base.FixedDataGrid) {
 }
 
 func verifyTreeClassification(trainData, testData base.FixedDataGrid) {
-	rand.Seed(44414515)
 	Convey("Using InferID3Tree to create the tree and do the fitting", func() {
 		Convey("Using a RandomTreeRule", func() {
 			randomTreeRuleGenerator := new(RandomTreeRuleGenerator)

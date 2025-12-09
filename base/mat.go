@@ -3,6 +3,7 @@ package base
 import (
 	"bytes"
 	"fmt"
+
 	"gonum.org/v1/gonum/mat"
 )
 

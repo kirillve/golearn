@@ -2,6 +2,7 @@ package linear_models
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 

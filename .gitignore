@@ -17,3 +17,4 @@
 
 #vim 
 *.sw*
+/trees/tmp

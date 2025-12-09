@@ -4,10 +4,11 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
-	. "github.com/smartystreets/goconvey/convey"
 	"io"
-	"io/ioutil"
+	"os"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestSerializeToCSV(t *testing.T) {
@@ -16,7 +17,7 @@ func TestSerializeToCSV(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("Saving the instances to CSV...", func() {
-			f, err := ioutil.TempFile("", "instTmpCSV")
+			f, err := os.CreateTemp("", "instTmpCSV")
 			So(err, ShouldBeNil)
 			err = SerializeInstancesToCSV(inst, f.Name())
 			So(err, ShouldBeNil)
@@ -43,7 +44,7 @@ func TestCreateAndReadClassifierStub(t *testing.T) {
 		}
 
 		Convey("Saving the classifier...", func() {
-			f, err := ioutil.TempFile("", "classTmpF")
+			f, err := os.CreateTemp("", "classTmpF")
 			So(err, ShouldBeNil)
 			serializer, err := CreateSerializedClassifierStub(f.Name(), metadata)
 			So(err, ShouldBeNil)
@@ -68,7 +69,7 @@ func TestSerializeToFile(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("Dumping to file...", func() {
-			f, err := ioutil.TempFile("", "instTmpF")
+			f, err := os.CreateTemp("", "instTmpF")
 			So(err, ShouldBeNil)
 			err = SerializeInstances(inst, f)
 			So(err, ShouldBeNil)

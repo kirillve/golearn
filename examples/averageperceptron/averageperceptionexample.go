@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	base "github.com/sjwhitworth/golearn/base"
-	evaluation "github.com/sjwhitworth/golearn/evaluation"
-	perceptron "github.com/sjwhitworth/golearn/perceptron"
 	"math/rand"
+
+	"github.com/sjwhitworth/golearn/base"
+	"github.com/sjwhitworth/golearn/evaluation"
+	"github.com/sjwhitworth/golearn/perceptron"
 )
 
 func main() {
-
 	rand.Seed(4402201)
 
 	rawData, err := base.ParseCSVToInstances("../datasets/house-votes-84.csv", true)

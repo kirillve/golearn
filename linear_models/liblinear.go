@@ -1,18 +1,45 @@
 package linear_models
 
 /*
+#include <stdlib.h>
 #include "linear.h"
 */
 import "C"
-import "fmt"
-import "unsafe"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type Problem struct {
-	c_prob C.struct_problem
+	// All pointers to C-allocated memory
+	c_prob    *C.struct_problem
+	c_y       *C.double
+	c_x       **C.struct_feature_node
+	c_x_space *C.struct_feature_node
+}
+
+// Free releases C-allocated memory in the Problem
+func (p *Problem) Free() {
+	if p.c_y != nil {
+		C.free(unsafe.Pointer(p.c_y))
+		p.c_y = nil
+	}
+	if p.c_x != nil {
+		C.free(unsafe.Pointer(p.c_x))
+		p.c_x = nil
+	}
+	if p.c_x_space != nil {
+		C.free(unsafe.Pointer(p.c_x_space))
+		p.c_x_space = nil
+	}
+	if p.c_prob != nil {
+		C.free(unsafe.Pointer(p.c_prob))
+		p.c_prob = nil
+	}
 }
 
 type Parameter struct {
-	c_param C.struct_parameter
+	c_param *C.struct_parameter
 }
 
 type Model struct {
@@ -30,11 +57,13 @@ const (
 	L2R_LR_DUAL         = C.L2R_LR_DUAL
 )
 
-func NewParameter(solver_type int, C float64, eps float64) *Parameter {
+func NewParameter(solver_type int, c_val float64, eps float64) *Parameter {
 	param := Parameter{}
+	// Allocate parameter struct in C memory
+	param.c_param = (*C.struct_parameter)(C.malloc(C.size_t(unsafe.Sizeof(C.struct_parameter{}))))
 	param.c_param.solver_type = C.int(solver_type)
 	param.c_param.eps = C.double(eps)
-	param.c_param.C = C.double(C)
+	param.c_param.C = C.double(c_val)
 	param.c_param.nr_weight = C.int(0)
 	param.c_param.weight_label = nil
 	param.c_param.weight = nil
@@ -42,27 +71,43 @@ func NewParameter(solver_type int, C float64, eps float64) *Parameter {
 	return &param
 }
 
+// Free releases C-allocated memory in the Parameter
+func (p *Parameter) Free() {
+	if p.c_param != nil {
+		C.free(unsafe.Pointer(p.c_param))
+		p.c_param = nil
+	}
+}
+
 func NewProblem(X [][]float64, y []float64, bias float64) *Problem {
 	prob := Problem{}
-	prob.c_prob.l = C.int(len(X))
-	prob.c_prob.n = C.int(len(X[0]) + 1)
+	n_samples := len(X)
 
-	prob.c_prob.x = convert_features(X, bias)
-	c_y := make([]C.double, len(y))
-	for i := 0; i < len(y); i++ {
-		c_y[i] = C.double(y[i])
-	}
-	prob.c_prob.y = &c_y[0]
+	// Allocate problem struct in C memory
+	prob.c_prob = (*C.struct_problem)(C.malloc(C.size_t(unsafe.Sizeof(C.struct_problem{}))))
+	prob.c_prob.l = C.int(n_samples)
+	prob.c_prob.n = C.int(len(X[0]) + 1)
 	prob.c_prob.bias = C.double(-1)
+
+	// Allocate y array in C memory (use len(y) to match original behavior)
+	n_labels := len(y)
+	prob.c_y = (*C.double)(C.malloc(C.size_t(n_labels) * C.size_t(unsafe.Sizeof(C.double(0)))))
+	y_slice := unsafe.Slice(prob.c_y, n_labels)
+	for i := 0; i < n_labels; i++ {
+		y_slice[i] = C.double(y[i])
+	}
+	prob.c_prob.y = prob.c_y
+
+	// Convert features using C-allocated memory
+	prob.c_x, prob.c_x_space = convertFeaturesToC(X, bias)
+	prob.c_prob.x = prob.c_x
 
 	return &prob
 }
 
 func Train(prob *Problem, param *Parameter) *Model {
 	libLinearHookPrintFunc() // Sets up logging
-	tmpCProb := &prob.c_prob
-	tmpCParam := &param.c_param
-	return &Model{unsafe.Pointer(C.train(tmpCProb, tmpCParam))}
+	return &Model{c_model: unsafe.Pointer(C.train(prob.c_prob, param.c_param))}
 }
 
 func Export(model *Model, filePath string) error {
@@ -113,7 +158,10 @@ func convert_vector(x []float64, bias float64) *C.struct_feature_node {
 	c_x[j].index = C.int(-1)
 	return &c_x[0]
 }
-func convert_features(X [][]float64, bias float64) **C.struct_feature_node {
+
+// convertFeaturesToC converts features to C-allocated memory
+// Returns the x pointer array and x_space (feature nodes) for later cleanup
+func convertFeaturesToC(X [][]float64, bias float64) (**C.struct_feature_node, *C.struct_feature_node) {
 	n_samples := len(X)
 	n_elements := 0
 
@@ -126,12 +174,17 @@ func convert_features(X [][]float64, bias float64) **C.struct_feature_node {
 		}
 	}
 
-	x_space := make([]C.struct_feature_node, n_elements+n_samples)
+	// Allocate x_space in C memory
+	x_space_size := C.size_t(n_elements+n_samples) * C.size_t(unsafe.Sizeof(C.struct_feature_node{}))
+	c_x_space := (*C.struct_feature_node)(C.malloc(x_space_size))
+	x_space := unsafe.Slice(c_x_space, n_elements+n_samples)
+
+	// Allocate x pointer array in C memory
+	x_size := C.size_t(n_samples) * C.size_t(unsafe.Sizeof((*C.struct_feature_node)(nil)))
+	c_x := (**C.struct_feature_node)(C.malloc(x_size))
+	x := unsafe.Slice(c_x, n_samples)
 
 	cursor := 0
-	x := make([]*C.struct_feature_node, n_samples)
-	var c_x **C.struct_feature_node
-
 	for i := 0; i < n_samples; i++ {
 		x[i] = &x_space[cursor]
 
@@ -150,6 +203,5 @@ func convert_features(X [][]float64, bias float64) **C.struct_feature_node {
 		x_space[cursor].index = C.int(-1)
 		cursor++
 	}
-	c_x = &x[0]
-	return c_x
+	return c_x, c_x_space
 }

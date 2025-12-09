@@ -2,7 +2,6 @@ package trees
 
 import (
 	"math"
-	"math/rand"
 
 	"github.com/sjwhitworth/golearn/base"
 )
@@ -16,7 +15,10 @@ type IsolationForest struct {
 
 // Select A random feature for splitting from the data.
 func selectFeature(data [][]float64) int64 {
-	return int64(rand.Intn(len(data[0])))
+	base.RngMu.Lock()
+	result := int64(base.Rng.Intn(len(data[0])))
+	base.RngMu.Unlock()
+	return result
 }
 
 // Find the minimum and maximum values of a feature. Used so that we can choose a random threshold.
@@ -40,7 +42,9 @@ func minMax(feature int64, data [][]float64) (float64, float64) {
 
 // Select a random threshold between the minimum and maximum of the feature.
 func selectValue(min, max float64) float64 {
-	val := min + (rand.Float64() * (max - min))
+	base.RngMu.Lock()
+	val := min + (base.Rng.Float64() * (max - min))
+	base.RngMu.Unlock()
 	if val == min {
 		val += 0.000001
 	} else if val == max {
@@ -119,9 +123,11 @@ func buildTree(data [][]float64, upperNode regressorNode, depth int, maxDepth in
 // Get a random subset of the data. Helps making each tree in forest different.
 func getRandomData(data [][]float64, subSpace int) [][]float64 {
 	var randomData [][]float64
+	base.RngMu.Lock()
 	for i := 0; i < subSpace; i++ {
-		randomData = append(randomData, data[rand.Intn(len(data))])
+		randomData = append(randomData, data[base.Rng.Intn(len(data))])
 	}
+	base.RngMu.Unlock()
 	return randomData
 }
 

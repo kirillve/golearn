@@ -1,4 +1,4 @@
-//Implementation of Principal Component Analysis(PCA) with SVD
+// Implementation of Principal Component Analysis(PCA) with SVD
 package pca
 
 import (
@@ -63,7 +63,7 @@ func (pca *PCA) Transform(X *mat.Dense) *mat.Dense {
 
 //Helpful private functions
 
-//Compute mean of the columns of input matrix
+// Compute mean of the columns of input matrix
 func mean(matrix *mat.Dense) *mat.Dense {
 	rows, cols := matrix.Dims()
 	meanVector := make([]float64, cols)
@@ -89,7 +89,7 @@ func matrixSubVector(mat, vec *mat.Dense) *mat.Dense {
 	return mat
 }
 
-//Multiplication of X(input data) and V(from SVD)
+// Multiplication of X(input data) and V(from SVD)
 func compute(X, Y mat.Matrix) *mat.Dense {
 	var ret mat.Dense
 	ret.Mul(X, Y)

@@ -2,12 +2,12 @@ package clustering
 
 import (
 	"errors"
+	"math"
+
 	"github.com/sjwhitworth/golearn/base"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat"
 	"gonum.org/v1/gonum/stat/distmv"
-	"math"
-	"math/rand"
 )
 
 var (
@@ -217,7 +217,9 @@ func initMeans(X *mat.Dense, n_comps, n_feats int) *mat.Dense {
 			v := X.ColView(j)
 			min := vectorMin(v)
 			max := vectorMax(v)
-			r := min + rand.Float64()*(max-min)
+			base.RngMu.Lock()
+			r := min + base.Rng.Float64()*(max-min)
+			base.RngMu.Unlock()
 			results = append(results, r)
 		}
 	}

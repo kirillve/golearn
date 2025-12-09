@@ -2,6 +2,7 @@ package filters
 
 import (
 	"fmt"
+
 	"github.com/sjwhitworth/golearn/base"
 )
 
@@ -110,7 +111,7 @@ func (f *FloatConvertFilter) Train() error {
 			vals := ac.GetValues()
 			if len(vals) <= 2 {
 				nAttr := base.NewFloatAttribute(ac.GetName())
-				fAttr := base.FilteredAttribute{ac, nAttr}
+				fAttr := base.FilteredAttribute{Old: ac, New: nAttr}
 				f.converted = append(f.converted, fAttr)
 				f.twoValuedCategoricalAttributes[a] = true
 			} else {
@@ -121,17 +122,17 @@ func (f *FloatConvertFilter) Train() error {
 					v := vals[i]
 					newName := fmt.Sprintf("%s_%s", ac.GetName(), v)
 					newAttr := base.NewFloatAttribute(newName)
-					fAttr := base.FilteredAttribute{ac, newAttr}
+					fAttr := base.FilteredAttribute{Old: ac, New: newAttr}
 					f.converted = append(f.converted, fAttr)
 					f.nValuedCategoricalAttributeMap[a][i] = newAttr
 				}
 			}
 		} else if ab, ok := a.(*base.FloatAttribute); ok {
-			fAttr := base.FilteredAttribute{ab, ab}
+			fAttr := base.FilteredAttribute{Old: ab, New: ab}
 			f.converted = append(f.converted, fAttr)
 		} else if af, ok := a.(*base.BinaryAttribute); ok {
 			newAttr := base.NewFloatAttribute(af.GetName())
-			fAttr := base.FilteredAttribute{af, newAttr}
+			fAttr := base.FilteredAttribute{Old: af, New: newAttr}
 			f.converted = append(f.converted, fAttr)
 		} else {
 			return fmt.Errorf("Unsupported Attribute type: %v", a)

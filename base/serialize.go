@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
@@ -45,7 +44,7 @@ func (f *FunctionalTarReader) GetNamedFile(name string) ([]byte, error) {
 		}
 
 		if hdr.Name == name {
-			ret, err := ioutil.ReadAll(tr)
+			ret, err := io.ReadAll(tr)
 			if err != nil {
 				return nil, WrapError(err)
 			}
@@ -85,7 +84,7 @@ type ClassifierMetadataV1 struct {
 	// ClassifierVersion is also provided by the classifier
 	// and checks whether this version of GoLearn can read what's
 	// be written.
-	ClassifierVersion string `json"classifier_version"`
+	ClassifierVersion string `json:"classifier_version"`
 	// This is a custom metadata field, provided by the classifier
 	ClassifierMetadata map[string]interface{} `json:"classifier_metadata"`
 }
@@ -361,7 +360,6 @@ func (c *ClassifierSerializer) WriteAttributesForKey(key string, attrs []Attribu
 
 // WriteInstances for key creates a new entry in the file containing some training instances
 func (c *ClassifierSerializer) WriteInstancesForKey(key string, g FixedDataGrid, includeData bool) error {
-	fmt.Sprintf("%v", c)
 	return SerializeInstancesToTarWriter(g, c.tarWriter, key, includeData)
 }
 

@@ -1,4 +1,4 @@
-//Package neural contains Neural Network functions.
+// Package neural contains Neural Network functions.
 package neural
 
 import (

@@ -4,11 +4,12 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
+
 	"github.com/sjwhitworth/golearn/base"
 	"github.com/sjwhitworth/golearn/ensemble"
 	"github.com/sjwhitworth/golearn/evaluation"
-	"math"
-	"math/rand"
 )
 
 func main() {
